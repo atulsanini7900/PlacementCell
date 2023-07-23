@@ -3,33 +3,36 @@ const LocalStrategy = require('passport-local').Strategy;
 
 const User = require('../models/userSchema');
 
+// Configure local strategy for user authentication
 const local = new LocalStrategy({ usernameField: 'email' }, function (
   email,
   password,
   done
 ) {
+  // Find the user in the database by email
   User.findOne({ email }, function (error, user) {
     if (error) {
       console.log(`Error in finding user: ${error}`);
       return done(error);
     }
 
+    // If the user is not found or password is incorrect
     if (!user || !user.isPasswordCorrect(password)) {
       console.log('Invalid Username/Password');
       return done(null, false);
     }
-    return done(null, user);
+    return done(null, user); // User authenticated successfully
   });
 });
 
 passport.use('local', local);
 
-//serialize user
+// Serialize user for session storage
 passport.serializeUser(function (user, done) {
   done(null, user.id);
 });
 
-//deserialize user
+// Deserialize user from session
 passport.deserializeUser(function (id, done) {
   User.findById(id, function (err, user) {
     if (err) {
@@ -40,7 +43,7 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
-// check if user is authenticated
+// Middleware to check if the user is authenticated
 passport.checkAuthentication = function (req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -48,7 +51,7 @@ passport.checkAuthentication = function (req, res, next) {
   return res.redirect('/users/signin');
 };
 
-// set authenticated user for views
+// Middleware to set authenticated user for views
 passport.setAuthenticatedUser = function (req, res, next) {
   if (req.isAuthenticated()) {
     res.locals.user = req.user;

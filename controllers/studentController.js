@@ -1,12 +1,14 @@
 const Company = require('../models/companySchema');
 const Student = require('../models/studentSchema');
 
-// render create student page
+// Render create student page: Display the 'add_student' view for creating a new student.
+
 module.exports.createStudentPage = async function (req, res) {
 	return res.render('add_student');
 };
 
-// create student
+// Create student: Create a new student with the provided details and save it to the database.
+
 module.exports.createStudent = async function (req, res) {
 	const { name, email, batch, college, placement, contactNumber, dsa, webd, react } = req.body;
 	try {
@@ -37,15 +39,13 @@ module.exports.createStudent = async function (req, res) {
 	}
 };
 
-// edit student
+// Delete student: Delete a student with the specified ID and remove them from any scheduled interviews with companies.
+
 module.exports.deleteStudent = async function (req, res) {
 	const { id } = req.params;
 	try {
-		// find the student using id in params
 		const student = await Student.findById(id);
 
-		// find the companies for which interview is scheduled
-		// and delete student from company interviews list
 		if (student && student.interviews.length > 0) {
 			for (let item of student.interviews) {
 				const company = await Company.findOne({ name: item.company });

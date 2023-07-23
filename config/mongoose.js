@@ -1,26 +1,7 @@
 const mongoose = require('mongoose');
-// mongoose.set('strictQuery',true);
-// const dotenv = require('.env');
 const DB = 'mongodb+srv://csv:csv@cluster0.jcutouz.mongodb.net/?retryWrites=true&w=majority';
-// 
-// mongodb+srv://pawarsubham438:6aO4JOECgoI7Xu71@cluster0.bemtdzm.mongodb.net/mernstack?retryWrites=true&w=majority
-// dotenv.config({ path: 'config/.env' });
 
-//connecting mongoose with database
-//I stored MONGODB_URI in my system veriable for security reason. veriable name MONGODB_URI followed by your mongo atlas link
-//for local use you can write this code
-// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/csvUploader');
-
-// mongoose.connect(DB, {
-// 	useNewUrlParser: true,
-// 	useCreateIndex:true,
-//  	useUnifiedTopology: true,
-// 	useFindAndModify:false
-// }).then(() => {
-// 	console.log('connection successful');
-// }).catch((err) => console.log('no connection',err));
-
-
+// Connect mongoose to the database.
 mongoose.connect(DB, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
@@ -28,8 +9,10 @@ mongoose.connect(DB, {
 
 const db = mongoose.connection;
 
+// Error handling for MongoDB connection.
 db.on('error', console.error.bind(console, 'Error in connecting to MongoDB'));
 
+// Once the connection is open, log the success message.
 db.once('open', function () {
 	console.log('Connected to Database :: Mongodb');
 });
